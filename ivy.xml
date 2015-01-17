@@ -29,6 +29,9 @@
 		<dependency org="ch.qos.logback" name="logback-classic" rev="1.1.2"/>
 		<dependency org="com.google.code.gson" name="gson" rev="2.3.1"/>
 		<dependency org="javax.websocket" name="javax.websocket-api" rev="1.1"/>
+		<dependency org="mysql" name="mysql-connector-java" rev="5.1.34"/>
+		<dependency org="com.google.guava" name="guava" rev="18.0"/>
+		<dependency org="javax.mail" name="mail" rev="1.4.7"/>
 	</dependencies>
 	
 </ivy-module>

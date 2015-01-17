@@ -18,8 +18,6 @@ public class SemUtil {
 		for(int i = 0; i < words.length; ++i){
 			String word = words[i].toLowerCase();
 			if(i > 0){
-				String org = String.valueOf(word.charAt(0));
-				String curr = String.valueOf(word.charAt(0)).toUpperCase();
 				word = word.replaceFirst(String.valueOf(word.charAt(0)), 
 									String.valueOf(word.charAt(0)).toUpperCase());
 			}
@@ -46,8 +44,12 @@ public class SemUtil {
 		return format.format(date);
 	}
 	
-	public static String toJson(){
+	public static String toJson(Object src){
 		Gson gson = new Gson();
-		return "";
+		return gson.toJson(src);
+	}
+	public static <T> T fromJson(String json, Class<T> classOfT){
+		Gson gson = new Gson();
+		return gson.fromJson(json, classOfT);
 	}
 }

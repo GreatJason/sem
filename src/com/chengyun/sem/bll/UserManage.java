@@ -11,20 +11,15 @@ import com.chengyun.sem.util.MailSenderInfo;
 import com.chengyun.sem.util.SimpleMailSender;
 
 public class UserManage {
-	private UserDao userDao = DaoFactory.getUserDao();
-	private static UserManage userManage = new UserManage();
+	private static UserDao userDao = DaoFactory.getUserDao();
 
 	private UserManage(){}
 	
-	public static UserManage getInstance(){
-		return userManage;
-	}
-	
-	public User getUser(String username){
+	public static User getUser(String username){
 		return userDao.getUser(username);
 	}
 	
-	public boolean login(String userName, String password){
+	public static boolean login(String userName, String password){
 		User user = userDao.getUser(userName);
 		if(user!= null){
 			return password.equals(user.getPassword());
@@ -32,7 +27,7 @@ public class UserManage {
 		return false;
 	}
 	
-	public boolean addUser(String userName, String password){
+	public static boolean addUser(String userName, String password){
 		User user = new User();
 		user.setUserName(userName);
 		user.setPassword(password);
@@ -40,7 +35,7 @@ public class UserManage {
 		return userDao.addUser(user);
 	}
 	
-	public boolean updatePassword(String username, String password, String verifyCode){
+	public static boolean updatePassword(String username, String password, String verifyCode){
 		User user = userDao.getUser(username);
 		if(user != null){
 			if(verifyCode.equals(user.getVerifyCode())){
@@ -60,7 +55,7 @@ public class UserManage {
 		return false;
 	}
 	
-	public String generateVerifyCode(String username){
+	public static String generateVerifyCode(String username){
 		User user = userDao.getUser(username);
 		if(user != null){
 			Random rand = new Random(); 
@@ -95,7 +90,7 @@ public class UserManage {
 		return null;
 	}
 	
-	public boolean deleteUser(String username){
+	public static boolean deleteUser(String username){
 		return userDao.deleteUser(username);
 	}
 }

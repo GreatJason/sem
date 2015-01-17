@@ -13,8 +13,16 @@
 	<servlet-name>UserServlet</servlet-name>
 	<servlet-class>com.chengyun.sem.servlet.UserServlet</servlet-class>
   </servlet>
+  <servlet>
+	<servlet-name>ErrorServlet</servlet-name>
+	<servlet-class>com.chengyun.sem.servlet.ErrorServlet</servlet-class>
+  </servlet>
   <servlet-mapping>
   	<servlet-name>UserServlet</servlet-name>
   	<url-pattern>/user</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping>
+  	<servlet-name>ErrorServlet</servlet-name>
+  	<url-pattern>/errorinfo</url-pattern>
   </servlet-mapping>
 </web-app>

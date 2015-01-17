@@ -27,8 +27,11 @@ public class UserServlet extends HttpServlet{
 		String strCmd = request.getParameter("command");
 		if(strCmd == null)
 			return;
-		UserCommand command = UserCommand.newInstance(Integer.parseInt(strCmd));
+		UserCommand command = UserCommand.valueOf(strCmd);
 		switch(command){
+		case Usage:
+			getUsage(request, response);
+			break;
 		case Login:
 			login(request, response);
 			break;
@@ -42,6 +45,7 @@ public class UserServlet extends HttpServlet{
 			updatePassword(request, response);
 			break;
 		default:
+			unknownCommand(request, response);
 			break;
 		}
 	}
@@ -58,7 +62,7 @@ public class UserServlet extends HttpServlet{
 		if(username == null || password == null){
 			return;
 		}
-		boolean ret = UserManage.getInstance().login(username, password);
+		boolean ret = UserManage.login(username, password);
 		PrintWriter writer = response.getWriter();
 		writer.write(String.valueOf(ret));
 	}
@@ -75,7 +79,7 @@ public class UserServlet extends HttpServlet{
 		if(username == null || password == null){
 			return;
 		}
-		boolean ret = UserManage.getInstance().addUser(username, password);
+		boolean ret = UserManage.addUser(username, password);
 		PrintWriter writer = response.getWriter();
 		writer.write(String.valueOf(ret));
 	}
@@ -93,7 +97,7 @@ public class UserServlet extends HttpServlet{
 		if(username == null || password == null){
 			return;
 		}
-		boolean ret = UserManage.getInstance().updatePassword(username, password, verifyCode);
+		boolean ret = UserManage.updatePassword(username, password, verifyCode);
 		PrintWriter writer = response.getWriter();
 		writer.write(String.valueOf(ret));
 	}
@@ -106,9 +110,50 @@ public class UserServlet extends HttpServlet{
 	 */
 	private void generateVerifyCode(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException{
 		String username = request.getParameter("username");
-		String verifyCode = UserManage.getInstance().generateVerifyCode(username);
+		String verifyCode = UserManage.generateVerifyCode(username);
 		PrintWriter writer = response.getWriter();
 		writer.write(verifyCode);
+	}
+	
+	/**
+	 * url:username=
+	 * @param request
+	 * @param response
+	 * @throws ServletException
+	 * @throws IOException
+	 */
+	private void getUsage(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException{
+		String usage = "<html>"
+				+ "<p> This page provides FIVE interfaces:"
+				+ "<p>1. http://web_name/sem?command=Usage"
+				+ "<p>2. http://web_name/sem?command=Login&username=username&password=password"
+				+ "<p>3. http://web_name/sem?command=Register&username=username&password=password"
+				+ "<p>4. http://web_name/sem?command=GetVerifyCode&username=username&password=password"
+				+ "<p>5. http://web_name/sem?command=UpdatePassword&username=username&password=password"
+				+ "</html>";
+		response.getWriter().write(usage);
+	}
+
+	private void unknownCommand(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException{
+		response.getWriter().write("Unknown Command");
+	}
+	enum UserCommand {
+		Usage("Usage"),
+		Login("Login"),
+		Register("Register"),
+		GetVerifyCode("GetVerifyCode"),
+		UpdatePassword("UpdatePassword");
+		
+		public final String value;
+		
+		UserCommand(String value){
+			this.value = value;
+		}
+		
+		@Override
+		public String toString(){
+			return String.valueOf(value);
+		}
 	}
 
 }

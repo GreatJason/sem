@@ -22,23 +22,23 @@ public class UserManageTest {
 	}
 	
 	public void addUserTest() {
-		Assert.assertTrue(UserManage.getInstance().addUser(username, password));
+		Assert.assertTrue(UserManage.addUser(username, password));
 	}
 
 	public void loginTest() {
-		UserManage.getInstance().login(username, password);
+		UserManage.login(username, password);
 		System.out.println(encryptToMD5(password));
 	}
 
 	public void updatePasswordTest() {
-		String verifyCode = UserManage.getInstance().generateVerifyCode(username);
-		Assert.assertTrue(UserManage.getInstance().updatePassword(username, newPwd, verifyCode));
-		User user = UserManage.getInstance().getUser(username);
+		String verifyCode = UserManage.generateVerifyCode(username);
+		Assert.assertTrue(UserManage.updatePassword(username, newPwd, verifyCode));
+		User user = UserManage.getUser(username);
 		Assert.assertEquals(newPwd, user.getPassword());
 	}
 	
 	public void deleteUserTest(){
-		Assert.assertTrue(UserManage.getInstance().deleteUser(username));
+		Assert.assertTrue(UserManage.deleteUser(username));
 	}
 
 	private String encryptToMD5(String info) {

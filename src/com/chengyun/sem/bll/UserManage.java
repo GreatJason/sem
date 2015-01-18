@@ -7,7 +7,6 @@ import com.chengyun.sem.dao.UserDao;
 import com.chengyun.sem.factory.DaoFactory;
 import com.chengyun.sem.model.User;
 import com.chengyun.sem.util.Logger;
-import com.chengyun.sem.util.MailSenderInfo;
 import com.chengyun.sem.util.SimpleMailSender;
 
 public class UserManage {
@@ -23,8 +22,9 @@ public class UserManage {
 		User user = userDao.getUser(userName);
 		if(user!= null){
 			return password.equals(user.getPassword());
+		} else{
+			return false;
 		}
-		return false;
 	}
 	
 	public static boolean addUser(String userName, String password){
@@ -47,8 +47,6 @@ public class UserManage {
 				}
 				//update
 				user.setPassword(password);
-				user.setVerifyCode(null);
-				user.setVerifyTime(null);
 				return userDao.updateUser(user);
 			}
 		}
@@ -61,18 +59,14 @@ public class UserManage {
 			Random rand = new Random(); 
 			String verifyCode = String.valueOf(rand.nextInt(900000) + 100000);
 			//send email
-			MailSenderInfo mailInfo = new MailSenderInfo();   
-			mailInfo.setMailServerHost("smtp.qq.com");   
-			mailInfo.setMailServerPort("25");		
-			mailInfo.setValidate(true);
-			mailInfo.setUserName("test@chengyun.cc");
-			mailInfo.setPassword("flw621234987");      
-			mailInfo.setFromAddress("test@chengyun.cc");
-			mailInfo.setToAddress(user.getEmail());
-			mailInfo.setSubject("验证码");
-			mailInfo.setContent("验证码:" + verifyCode);
+			String subject = "承云科技邮箱验证";
+			String content = username + "\n"
+							+ "您好!"
+							+ "您的验证码为:" + verifyCode + "\n" 
+							+ "注意：此操作可能会修改您的密码。如非本人操作，请及时登录并修改密码以保证账户安全。" + "\n"
+							+ "此邮件为系统自动发送，请勿回复！";
 			SimpleMailSender sms = new SimpleMailSender(); 
-			if(sms.sendTextMail(mailInfo)){
+			if(sms.sendTextMailFromQQ(user.getEmail(), subject, content)){
 				//update user in db
 				user.setVerifyCode(verifyCode);
 				user.setVerifyTime(new Date());

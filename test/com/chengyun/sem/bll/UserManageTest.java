@@ -30,6 +30,7 @@ public class UserManageTest {
 		System.out.println(encryptToMD5(password));
 	}
 
+	@Test
 	public void updatePasswordTest() {
 		String verifyCode = UserManage.generateVerifyCode(username);
 		Assert.assertTrue(UserManage.updatePassword(username, newPwd, verifyCode));

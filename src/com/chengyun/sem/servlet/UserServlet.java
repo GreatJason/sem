@@ -9,6 +9,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.chengyun.sem.bll.UserManage;
+import com.chengyun.sem.model.Command;
+import com.chengyun.sem.util.Logger;
 
 public class UserServlet extends HttpServlet{
 	
@@ -24,29 +26,32 @@ public class UserServlet extends HttpServlet{
 	
 	@Override
 	public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException{
-		String strCmd = request.getParameter("command");
-		if(strCmd == null)
-			return;
-		UserCommand command = UserCommand.valueOf(strCmd);
-		switch(command){
-		case Usage:
-			getUsage(request, response);
-			break;
-		case Login:
-			login(request, response);
-			break;
-		case Register:
-			register(request, response);
-			break;
-		case GetVerifyCode:
-			generateVerifyCode(request, response);
-			break;
-		case UpdatePassword:
-			updatePassword(request, response);
-			break;
-		default:
-			unknownCommand(request, response);
-			break;
+		try{
+			String strCmd = request.getParameter("command");
+			if(strCmd == null)
+				return;
+			switch(Command.valueOf(strCmd)){
+			case Usage:
+				getUsage(request, response);
+				break;
+			case Login:
+				login(request, response);
+				break;
+			case Register:
+				register(request, response);
+				break;
+			case GetVerifyCode:
+				generateVerifyCode(request, response);
+				break;
+			case UpdatePassword:
+				updatePassword(request, response);
+				break;
+			default:
+				unsupportCommand(request, response);
+				break;
+			}
+		} catch(Exception e){
+			Logger.error(e);
 		}
 	}
 	/**
@@ -62,7 +67,7 @@ public class UserServlet extends HttpServlet{
 		if(username == null || password == null){
 			return;
 		}
-		boolean ret = UserManage.login(username, password);
+		int ret = UserManage.login(username, password) ? 0 : 1;
 		PrintWriter writer = response.getWriter();
 		writer.write(String.valueOf(ret));
 	}
@@ -79,7 +84,7 @@ public class UserServlet extends HttpServlet{
 		if(username == null || password == null){
 			return;
 		}
-		boolean ret = UserManage.addUser(username, password);
+		int ret = UserManage.addUser(username, password) ? 0 : 1;
 		PrintWriter writer = response.getWriter();
 		writer.write(String.valueOf(ret));
 	}
@@ -94,10 +99,10 @@ public class UserServlet extends HttpServlet{
 		String username = request.getParameter("username");
 		String password = request.getParameter("password");
 		String verifyCode = request.getParameter("verifycode");
-		if(username == null || password == null){
+		if(username == null || password == null || verifyCode == null){
 			return;
 		}
-		boolean ret = UserManage.updatePassword(username, password, verifyCode);
+		int ret = UserManage.updatePassword(username, password, verifyCode) ? 0 : 1;
 		PrintWriter writer = response.getWriter();
 		writer.write(String.valueOf(ret));
 	}
@@ -112,7 +117,11 @@ public class UserServlet extends HttpServlet{
 		String username = request.getParameter("username");
 		String verifyCode = UserManage.generateVerifyCode(username);
 		PrintWriter writer = response.getWriter();
-		writer.write(verifyCode);
+		if(verifyCode != null){
+			writer.write(verifyCode);
+		} else{
+			writer.write("Failed to send verify code! Please connect administrator!");
+		}
 	}
 	
 	/**
@@ -128,32 +137,13 @@ public class UserServlet extends HttpServlet{
 				+ "<p>1. http://web_name/sem?command=Usage"
 				+ "<p>2. http://web_name/sem?command=Login&username=username&password=password"
 				+ "<p>3. http://web_name/sem?command=Register&username=username&password=password"
-				+ "<p>4. http://web_name/sem?command=GetVerifyCode&username=username&password=password"
-				+ "<p>5. http://web_name/sem?command=UpdatePassword&username=username&password=password"
+				+ "<p>4. http://web_name/sem?command=GetVerifyCode&username=username"
+				+ "<p>5. http://web_name/sem?command=UpdatePassword&username=username&password=password&verifycode=verifycode"
 				+ "</html>";
 		response.getWriter().write(usage);
 	}
 
-	private void unknownCommand(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException{
+	private void unsupportCommand(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException{
 		response.getWriter().write("Unknown Command");
 	}
-	enum UserCommand {
-		Usage("Usage"),
-		Login("Login"),
-		Register("Register"),
-		GetVerifyCode("GetVerifyCode"),
-		UpdatePassword("UpdatePassword");
-		
-		public final String value;
-		
-		UserCommand(String value){
-			this.value = value;
-		}
-		
-		@Override
-		public String toString(){
-			return String.valueOf(value);
-		}
-	}
-
 }

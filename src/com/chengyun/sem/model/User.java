@@ -11,6 +11,7 @@ public class User {
 	private String mobile;
 	private String verifyCode;
 	private Date verifyTime;
+	private OnlineStatus onlineStatus;
 	
 	public String getUserId(){
 		return userId;
@@ -59,5 +60,11 @@ public class User {
 	}
 	public void setRealname(String realname) {
 		this.realname = realname;
+	}
+	public OnlineStatus getOnlineStatus() {
+		return onlineStatus;
+	}
+	public void setOnlineStatus(OnlineStatus onlineStatus) {
+		this.onlineStatus = onlineStatus;
 	}
 }

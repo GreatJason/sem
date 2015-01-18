@@ -6,22 +6,42 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import com.chengyun.sem.factory.DaoFactory;
+import com.chengyun.sem.model.OnlineStatus;
 import com.chengyun.sem.model.User;
-import com.chengyun.sem.mysqldao.UserDaoImpl;
 
 public class UserDaoTest {
 	
 private UserDao userDao = DaoFactory.getUserDao();
 	
+	private String userName = "user01";
+	private String password = "password";
+
 	@Test
+	public void succeedTest(){
+		addUser();
+		getUser();
+		updateUser();
+		deleteUser();
+	}
+
+	@Test
+	public void addDuplicatedUserTest(){
+		addUser();
+		addUser();
+		deleteUser();
+	}
+	
 	public void getUser(){
-		String userName = "jasonfan";
-		userDao = new UserDaoImpl();
 		User user = userDao.getUser(userName);
 		Assert.assertEquals(userName, user.getUserName());
 	}
 	
-	@Test
+	public void getNotExistsUser(){
+		String username = "notexistsusername";
+		User user = userDao.getUser(username);
+		Assert.assertNull(user);
+	}
+	
 	public void updateUser(){
 		User user = userDao.getUser("jasonfan");
 		user.setVerifyCode("123456");
@@ -29,15 +49,13 @@ private UserDao userDao = DaoFactory.getUserDao();
 		Assert.assertTrue(userDao.updateUser(user));
 	}
 	
-	@Test
 	public void addUser(){
 		User user = new User();
-		user.setUserName("test01");
-		user.setPassword("abcdefg");
+		user.setUserName(userName);
+		user.setPassword(password);
 		Assert.assertTrue(userDao.addUser(user));
 	}
 	
-	@Test
 	public void deleteUser(){
 		Assert.assertTrue(userDao.deleteUser("fanliwei3"));
 	}

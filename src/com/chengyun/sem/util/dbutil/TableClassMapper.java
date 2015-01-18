@@ -34,5 +34,4 @@ public class TableClassMapper{
 		}
 		return results.size() == 0 ? null : results;
 	}
-
 }

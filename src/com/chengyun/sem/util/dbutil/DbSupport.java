@@ -9,7 +9,7 @@ import static com.chengyun.sem.util.Logger.*;
 public class DbSupport {
 	private Connection conn;
 	private final String driver = "com.mysql.jdbc.Driver";
-	private final String url = "jdbc:mysql://127.0.0.1:3306/test";
+	private final String url = "jdbc:mysql://127.0.0.1:3306/sem";
 	private final String user = "root";
 	private final String password = "root";
 	private static DbSupport instance = new DbSupport();

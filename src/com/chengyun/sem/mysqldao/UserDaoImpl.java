@@ -1,10 +1,14 @@
 package com.chengyun.sem.mysqldao;
 
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Timestamp;
+import java.util.Date;
 import java.util.UUID;
 
 import com.chengyun.sem.dao.UserDao;
+import com.chengyun.sem.model.OnlineStatus;
 import com.chengyun.sem.model.User;
 import com.chengyun.sem.util.Logger;
 import com.chengyun.sem.util.SemUtil;
@@ -15,7 +19,31 @@ public class UserDaoImpl implements UserDao{
 	
 	@Override
 	public User getUser(String userName) {
-		return null;
+		try{
+			String sql = "select * from user where user_name = ?";
+			PreparedStatement pstmt = db.connect().prepareStatement(sql);
+			int i = 0;
+			pstmt.setString(++i, userName);
+			ResultSet rs = pstmt.executeQuery();
+			User user = new User();
+			while(rs.next()){
+				user.setUserName(rs.getString("user_name"));
+				user.setUserId(rs.getString("user_id"));
+				user.setPassword(rs.getString("password"));
+				user.setRealname(rs.getString("realname"));
+				user.setMobile(rs.getString("mobile"));
+				user.setEmail(rs.getString("email"));
+				user.setVerifyCode(rs.getString("verify_code"));
+				Timestamp timestamp = rs.getTimestamp("verify_time");
+				if(timestamp != null)
+					user.setVerifyTime(new Date(rs.getTimestamp("verify_time").getTime()));
+				user.setOnlineStatus(OnlineStatus.valueOf(rs.getInt("online_status")));
+			}
+			return user;
+		}catch(Exception e){
+			Logger.error(e);
+			throw new RuntimeException(e);
+		}
 	}
 
 	@Override

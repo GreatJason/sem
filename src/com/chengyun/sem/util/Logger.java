@@ -3,6 +3,7 @@ package com.chengyun.sem.util;
 import org.slf4j.LoggerFactory;
 
 public class Logger {
+	//TODO:change jboss standalone.xml back to allow localhost access only
 	private static org.slf4j.Logger LOGGER;
 	
 	public static void trace(Object obj){

@@ -5,6 +5,7 @@ import java.util.Random;
 
 import com.chengyun.sem.dao.UserDao;
 import com.chengyun.sem.factory.DaoFactory;
+import com.chengyun.sem.model.OnlineStatus;
 import com.chengyun.sem.model.User;
 import com.chengyun.sem.util.Logger;
 import com.chengyun.sem.util.SimpleMailSender;
@@ -21,10 +22,19 @@ public class UserManage {
 	public static boolean login(String userName, String password){
 		User user = userDao.getUser(userName);
 		if(user!= null){
-			return password.equals(user.getPassword());
-		} else{
-			return false;
-		}
+			if(userDao.updateOnlineStatus(user.getUserId(), OnlineStatus.ONLINE.toInt())){
+				return password.equals(user.getPassword());	
+			}
+		} 
+		return false;
+	}
+	
+	public static boolean logout(String userName){
+		User user = userDao.getUser(userName);
+		if(user != null){
+			return userDao.updateOnlineStatus(user.getUserId(), OnlineStatus.OFFLINE.toInt());
+		} 
+		return false;
 	}
 	
 	public static boolean addUser(String userName, String password){

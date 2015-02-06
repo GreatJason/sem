@@ -5,6 +5,7 @@ public enum Command {
 	Login("Login"),
 	Register("Register"),
 	GetVerifyCode("GetVerifyCode"),
+	Logout("Logout"),
 	UpdatePassword("UpdatePassword");
 	
 	public final String value;

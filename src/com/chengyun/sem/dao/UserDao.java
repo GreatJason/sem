@@ -7,4 +7,5 @@ public interface UserDao{
 	boolean addUser(User user);
 	boolean updateUser(User user);
 	boolean deleteUser(String username);
+	public boolean updateOnlineStatus(String userId, int onlineStatus);
 }

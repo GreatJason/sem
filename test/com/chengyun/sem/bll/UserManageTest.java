@@ -6,6 +6,7 @@ import java.security.NoSuchAlgorithmException;
 import org.junit.Assert;
 import org.junit.Test;
 
+import com.chengyun.sem.model.OnlineStatus;
 import com.chengyun.sem.model.User;
 
 public class UserManageTest {
@@ -42,6 +43,22 @@ public class UserManageTest {
 		Assert.assertTrue(UserManage.deleteUser(username));
 	}
 
+	@Test
+	public void loginAndOutTest(){
+		User user = UserManage.getUser(username);
+		Assert.assertTrue(UserManage.login(user.getUserName(), user.getPassword()));
+		Assert.assertTrue(UserManage.getUser(username).getOnlineStatus().equals(OnlineStatus.ONLINE));
+		UserManage.logout(username);
+		Assert.assertTrue(UserManage.getUser(username).getOnlineStatus().equals(OnlineStatus.OFFLINE));
+	}
+	
+	@Test
+	public void enumEqualsTest(){
+		OnlineStatus s1 = OnlineStatus.ONLINE;
+		OnlineStatus s2 = OnlineStatus.ONLINE;
+		Assert.assertTrue(s1.equals(s2));
+	}
+	
 	private String encryptToMD5(String info) {
 		byte[] digesta = null;
 		try {

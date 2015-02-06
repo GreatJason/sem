@@ -20,6 +20,10 @@ public enum OnlineStatus {
 	public String toString(){
 		return String.valueOf(value);
 	}
+
+	public int toInt(){
+		return value;
+	}
 	
 	public static OnlineStatus valueOf(int status){
 		for(OnlineStatus statusEnum:OnlineStatusHelper.allStatuses){

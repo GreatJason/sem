@@ -71,7 +71,7 @@ public class UserDaoImpl implements UserDao{
 	@Override
 	public boolean updateUser(User user) {
 		try{
-			String sql = "update user set user_name = ?, password=?, realname=?, mobile=?, email=?, verify_code=?, verify_time=? where user_id=?";
+			String sql = "update user set user_name = ?, password=?, realname=?, mobile=?, email=?, verify_code=?, verify_time=?, online_status=? where user_id=?";
 			PreparedStatement pstmt = db.connect().prepareStatement(sql);
 			int i = 0;
 			pstmt.setString(++i, user.getUserName());
@@ -81,6 +81,7 @@ public class UserDaoImpl implements UserDao{
 			pstmt.setString(++i, user.getEmail());
 			pstmt.setString(++i, user.getVerifyCode());
 			pstmt.setString(++i, SemUtil.date2String(user.getVerifyTime()));
+			pstmt.setInt(++i, Integer.parseInt(user.getOnlineStatus().toString()));
 			pstmt.setString(++i, user.getUserId());
 			pstmt.executeUpdate();
 			return true;
@@ -101,7 +102,25 @@ public class UserDaoImpl implements UserDao{
 			pstmt.execute();
 			return true;
 		} catch (SQLException e) {
-			e.printStackTrace();
+			Logger.error(e);
+		} finally{
+			db.disconnect();
+		}
+		return false;
+	}
+
+	@Override
+	public boolean updateOnlineStatus(String userId, int onlineStatus) {
+		try{
+			String sql = "update user set online_status = ? where user_id = ?";
+			PreparedStatement pstmt = db.connect().prepareStatement(sql);
+			int i = 0;
+			pstmt.setInt(++i, onlineStatus);
+			pstmt.setString(++i, userId);
+			pstmt.executeUpdate();
+			return true;
+		} catch(SQLException e){
+			Logger.error(e);
 		} finally{
 			db.disconnect();
 		}

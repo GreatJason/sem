@@ -26,6 +26,7 @@ public class UserServlet extends HttpServlet{
 	
 	@Override
 	public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException{
+		System.out.println("user comes in");
 		try{
 			String strCmd = request.getParameter("command");
 			if(strCmd == null)
@@ -46,6 +47,9 @@ public class UserServlet extends HttpServlet{
 			case UpdatePassword:
 				updatePassword(request, response);
 				break;
+			case Logout:
+				logout(request, response);
+				break;
 			default:
 				unsupportCommand(request, response);
 				break;
@@ -53,7 +57,16 @@ public class UserServlet extends HttpServlet{
 		} catch(Exception e){
 			Logger.error(e);
 		}
+		System.out.println("user goes out");
 	}
+	
+	private void logout(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException{
+		String username = request.getParameter("username");
+		if(username != null){
+			UserManage.logout(username);
+		}
+	}
+
 	/**
 	 * url:username=&password=
 	 * @param request
@@ -133,12 +146,13 @@ public class UserServlet extends HttpServlet{
 	 */
 	private void getUsage(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException{
 		String usage = "<html>"
-				+ "<p> This page provides FIVE interfaces:"
-				+ "<p>1. http://web_name/sem?command=Usage"
-				+ "<p>2. http://web_name/sem?command=Login&username=username&password=password"
-				+ "<p>3. http://web_name/sem?command=Register&username=username&password=password"
-				+ "<p>4. http://web_name/sem?command=GetVerifyCode&username=username"
-				+ "<p>5. http://web_name/sem?command=UpdatePassword&username=username&password=password&verifycode=verifycode"
+				+ "<h3> This page provides following interfaces:</h3>"
+				+ "1. http://web_name/sem/user?command=Usage<br/>"
+				+ "2. http://web_name/sem/user?command=Login&username=username&password=password<br/>"
+				+ "3. http://web_name/sem/user?command=Register&username=username&password=password<br/>"
+				+ "4. http://web_name/sem/user?command=GetVerifyCode&username=username<br/>"
+				+ "5. http://web_name/sem/user?command=UpdatePassword&username=username&password=password&verifycode=verifycode<br/>"
+				+ "6. http://web_name/sem/user?command=Logout&username=username<br/>"
 				+ "</html>";
 		response.getWriter().write(usage);
 	}
